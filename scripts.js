@@ -56,10 +56,12 @@ scene.add( plane );
 var geometry = new THREE.SphereGeometry( 5, 32, 32 );
 var material = new THREE.MeshBasicMaterial( {map: texture_sky} );
 var body = new THREE.Mesh( geometry, material );
+body.scale.set(0.26,0.26,0.26);
+
 body.position.y-=15;
 body.position.z+=1;
-body.scale.set(0.26,0.26,0.26);
 scene.add( body );
+
 
 var animate = function () {
     requestAnimationFrame( animate );
