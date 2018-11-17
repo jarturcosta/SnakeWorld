@@ -8,9 +8,11 @@ spawnableObjects = {};
 //camera.position.z =150;
 
 
-var renderer = new THREE.WebGLRenderer();
+var renderer = new THREE.WebGLRenderer({ alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+scene.background = new THREE.Color(0x00CCFF);
 
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -25,7 +27,7 @@ var fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'
 fillLight.position.set(100, 0, 100);
 
 var up_light = new THREE.PointLight(0xffffff, 30, 200, 10);
-up_light.position.set(50, 100, 50);
+up_light.position.set(5, 10, 5);
 
 var down_light = new THREE.PointLight(0xffffff, 5, 100);
 down_light.position.set(50, -100, 50);
@@ -33,30 +35,25 @@ down_light.position.set(50, -100, 50);
 var backLight = new THREE.DirectionalLight(0xffffff, 1.0);
 backLight.position.set(100, 0, -100).normalize();
 
-scene.add(keyLight);
-scene.add(fillLight);
-scene.add(backLight);
-scene.add(up_light);
-scene.add(down_light);
+//scene.add(keyLight);
+//scene.add(fillLight);
+//scene.add(backLight);
+//scene.add(up_light);
+//scene.add(down_light);
+
+var light = new THREE.AmbientLight( 0x404040, 5); // soft white light
+scene.add( light );
 
 var cubePosition;
 var cubeSize;
 var moveSpeed = 0.2;
 var turnSpeed = 0.1;
-var geometry_plane = new THREE.PlaneGeometry(90, 90, 32);
-var texture = new THREE.TextureLoader().load('assets/270.png');
+
 
 var material = new THREE.MeshBasicMaterial({map: texture});
-var texture_sky = new THREE.TextureLoader().load('assets/snek2.jpg');
-
-var plane = new THREE.Mesh(geometry_plane, material);
-plane.rotation.x = -Math.PI / 2;
-scene.add(plane);
-
+var texture_sky = new THREE.TextureLoader().load('assets/snek.jpg');
 var geometry = new THREE.SphereGeometry(5, 32, 32);
 var material = new THREE.MeshBasicMaterial({map: texture_sky});
-var body = new THREE.Mesh(geometry, material);
-body.scale.set(0.26, 0.26, 0.26);
 
 var i;
 var snake = [];
@@ -65,12 +62,60 @@ var orders = [];
 
 for (i = 1; i < 100; i++) {
     var temp = new THREE.Mesh(geometry, material);
+    /*temp.scale.x= 0.25;
+    temp.scale.y= 0.25;
+    temp.scale.z= 0.25;*/
+   // temp.position.z += i;
     temp.scale.set(0.26, 0.26, 0.26);
     temp.position.x -= i;
     scene.add(temp);
     snake.push(temp);
     orders.push([]);
 }
+
+
+var geometry_plane = new THREE.PlaneGeometry(320, 320, 32);
+var texture = new THREE.TextureLoader().load('assets/grass2.jpg');
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set( 16, 16 );
+
+var material = new THREE.MeshBasicMaterial({map: texture});
+
+var plane = new THREE.Mesh(geometry_plane,material);
+plane.rotation.x = -(Math.PI / 2);
+scene.add(plane);
+
+
+
+var mtlLoader = new THREE.MTLLoader();
+mtlLoader.setTexturePath('assets/');
+mtlLoader.setPath('assets/');
+mtlLoader.load('dungeon3.mtl', function (materials) {
+
+    materials.preload();
+
+    var objLoader = new THREE.OBJLoader();
+    objLoader.setMaterials(materials);
+    objLoader.setPath('assets/');
+    objLoader.load('dungeon3.obj', function (object) {
+
+
+        object.scale.x= 0.015;
+        object.scale.y= 0.015;
+        object.scale.z= 0.015;
+        object.rotation.x = -(Math.PI / 2);
+        object.position.z = -10;
+        scene.add(object);
+
+
+        //object.position.y -= 60;
+
+    });
+
+});
+
+
 //scene.add( body );
 controls = new THREE.PlayerControls(camera, snake[0], snake);
 controls.init();

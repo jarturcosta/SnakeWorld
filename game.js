@@ -13,7 +13,7 @@ game = function (scene) {
     }
 
     function randomPosition(x, y) {
-        return new Position(getRandomInt(x), 1, getRandomInt(y));
+        return new Position(getRandomInt(x), 0, getRandomInt(y));
     }
 
     this.checkFood = function () {
