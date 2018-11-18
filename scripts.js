@@ -20,6 +20,28 @@ controls.dampingFactor = 0.25;
 controls.enableZoom = true;
 
 
+var keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
+keyLight.position.set(-100, 0, 100);
+
+var fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'), 0.75);
+fillLight.position.set(100, 0, 100);
+
+var up_light = new THREE.PointLight(0xffffff, 30, 200, 10);
+up_light.position.set(5, 10, 5);
+
+var down_light = new THREE.PointLight(0xffffff, 5, 100);
+down_light.position.set(50, -100, 50);
+
+var backLight = new THREE.DirectionalLight(0xffffff, 1.0);
+backLight.position.set(100, 0, -100).normalize();
+
+//scene.add(keyLight);
+//scene.add(fillLight);
+//scene.add(backLight);
+//scene.add(up_light);
+//scene.add(down_light);
+
+
 var cubePosition;
 var cubeSize;
 var moveSpeed = 0.2;
@@ -65,19 +87,41 @@ var plane = new THREE.Mesh(geometry_plane, material);
 plane.rotation.x = -(Math.PI / 2);
 scene.add(plane);
 
-var geometry_wall = new THREE.PlaneGeometry(200, 40, 32);
+var geometry_wall = new THREE.PlaneGeometry(200,40,32);
 var texture = new THREE.TextureLoader().load('assets/wall2.jpg');
 var material = new THREE.MeshBasicMaterial({map: texture});
 
-var wall1 = new THREE.Mesh(geometry_wall, material);
+var wall1 = new THREE.Mesh(geometry_wall,material);
 wall1.position.z = -100;
 scene.add(wall1);
 
-var wall2 = new THREE.Mesh(geometry_wall, material);
+var wall2 = new THREE.Mesh(geometry_wall,material);
 wall2.position.x = -100;
 wall2.rotation.y = -(Math.PI / 2);
 wall2.material.side = THREE.DoubleSide;
 scene.add(wall2);
+
+var wall3 = new THREE.Mesh(geometry_wall,material);
+wall3.position.x = 100;
+wall3.rotation.y = -(Math.PI / 2);
+wall3.material.side = THREE.DoubleSide;
+scene.add(wall3);
+
+var wall4 = new THREE.Mesh(geometry_wall,material);
+wall4.position.z = 100;
+wall4.material.side = THREE.DoubleSide;
+scene.add(wall4);
+
+//add_model("tree1",0.15,30,28);
+
+var i;
+for (i = 0; i < 50; i++) {
+    add_model("tree"+getRndInteger(1,5),0.15,getRndInteger(-97,97),getRndInteger(-97,97) )
+}
+
+
+
+
 
 
 /*
@@ -145,7 +189,7 @@ p.then(function (response) {
 }, function (err) {
     console.log(err);
 });
-p = newObject("bomb", 0.015);
+p = newObject("bomb", 0.005);
 p.then(function (response) {
     game.init(spawnableObjects);
 }, function (err) {
@@ -153,12 +197,6 @@ p.then(function (response) {
 });
 
 p = newObject("pacman", 0.015);
-p.then(function (response) {
-    game.init(spawnableObjects);
-}, function (err) {
-    console.log(err);
-});
-p = newObject("rock", 0.015);
 p.then(function (response) {
     game.init(spawnableObjects);
 }, function (err) {
@@ -230,6 +268,37 @@ function calculateDistance(position, order) {
     return Math.sqrt(Math.pow(position.x - order[0], 2) + Math.pow(position.y - order[1], 2) + Math.pow(position.z - order[2], 2));
 }
 
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min) ) + min;
+}
+
+function add_model(name,scale,x,z) {
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.setTexturePath('assets/');
+    mtlLoader.setPath('assets/');
+    mtlLoader.load(name+'.mtl', function (materials) {
+
+        materials.preload();
+
+        var objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('assets/');
+        objLoader.load(name+'.obj', function (object) {
+
+
+            object.scale.set(scale,scale,scale);
+            object.position.z = z;
+            object.position.x = x;
+            object.rotation.x = -(Math.PI / 2);
+            scene.add(object);
+
+
+
+
+        });
+
+    });
+}
 
 function newObject(name, scale) {
     var loaderPromise = new Promise(function (resolve, reject) {
@@ -269,8 +338,8 @@ function expandSnake(i) {
 }
 
 function reduceSnake(i) {
-
     if (i != -1) {
+        console.log(i +"cortar a cobra");
         for (j = i; j < snake.length; j++) {
             var temp = snake[snake.length - 1].clone();
             scene.remove(snake[j]);
@@ -279,6 +348,8 @@ function reduceSnake(i) {
         orders.splice(i, orders.length - i);
     }
 }
+
+
 
 
 animate();
