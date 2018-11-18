@@ -2,12 +2,12 @@ FOODTYPES = ["Apple", "rat", "bird"];
 OBJECT_TEXTURES = ["apple", "rat", "bird"];
 HARMFUL_OBJECTS = [];
 meshes = [];
-texture_snake = new THREE.TextureLoader().load('assets/snek.jpg');
+texture_snake = new THREE.TextureLoader().load('assets/snek3.jpg');
 geometry_snake = new THREE.SphereGeometry(5, 32, 32);
 material_snake = new THREE.MeshBasicMaterial({map: texture_snake});
 
 
-game = function (scene, snake, orders) {
+game = function (scene, snake, orders, controls) {
     this.snake = snake;
     this.orders = orders;
     this.score = 1;
@@ -16,6 +16,7 @@ game = function (scene, snake, orders) {
     this.scene = scene;
     this.meshes = [];
     this.loaded = false;
+    this.controls = controls;
     this.init = function init(objects) {
         console.log(objects);
         this.spawnableObjects = objects;
@@ -51,12 +52,11 @@ game = function (scene, snake, orders) {
 
         var random_type = getRandomInt([0, 100]);
         var type;
-        if (random_type == 1) {
+        if (random_type == 0) {
             type = "GoldenMouse";
-        } else if (random_type < 42 && random_type > 22) {
-            console.log("Shroom");
+        } else if ( 0 < random_type && random_type < 20) {
             type = "mushroom";
-        } else if (random_type < 21) {
+        } else if (20 < random_type && random_type < 25) {
             type = "Bird";
         } else {
             type = "Apple";
@@ -69,7 +69,7 @@ game = function (scene, snake, orders) {
             temp.push(meshes[i]);
         }
         for (i = 0; i < temp.length; i++) {
-            if (distance(origin.position, temp[i].position) < 2) {
+            if (distance(origin.position, temp[i].position) < 1) {
                 scene.remove(temp[i]);
                 meshes.splice(i, 1);
                 this.spawnFood();
@@ -109,12 +109,13 @@ game = function (scene, snake, orders) {
                 return 5;
                 break;
             case "mushroom":
-                this.mushroom_effect(25);
+                this.mushroom_effect(50);
                 break;
         }
     }
 
     this.mushroom_effect = async function mushroom_effect(cicles) {
+        this.controls.moveSpeed = this.controls.moveSpeed*2;
         var i;
         var j;
         var colors = [0x005bef,0xc300ef,0xef0000,0x00ef33,0xefcb00];
@@ -129,6 +130,7 @@ game = function (scene, snake, orders) {
         this.scene.background = new THREE.Color(0x00CCFF);
         scene.getObjectByName("ambient",true).color = new THREE.Color(0x404040)
         scene.getObjectByName("ambient",true).intensity = 2;
+        this.controls.moveSpeed = this.controls.moveSpeed/2;
 
     }
 

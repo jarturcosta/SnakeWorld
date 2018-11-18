@@ -20,28 +20,6 @@ controls.dampingFactor = 0.25;
 controls.enableZoom = true;
 
 
-var keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
-keyLight.position.set(-100, 0, 100);
-
-var fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'), 0.75);
-fillLight.position.set(100, 0, 100);
-
-var up_light = new THREE.PointLight(0xffffff, 30, 200, 10);
-up_light.position.set(5, 10, 5);
-
-var down_light = new THREE.PointLight(0xffffff, 5, 100);
-down_light.position.set(50, -100, 50);
-
-var backLight = new THREE.DirectionalLight(0xffffff, 1.0);
-backLight.position.set(100, 0, -100).normalize();
-
-//scene.add(keyLight);
-//scene.add(fillLight);
-//scene.add(backLight);
-//scene.add(up_light);
-//scene.add(down_light);
-
-
 var cubePosition;
 var cubeSize;
 var moveSpeed = 0.2;
@@ -49,7 +27,8 @@ var turnSpeed = 0.1;
 
 
 var material = new THREE.MeshBasicMaterial({map: texture});
-var texture_sky = new THREE.TextureLoader().load('assets/snek.jpg');
+var texture_sky = new THREE.TextureLoader().load('assets/snek3.jpg');
+texture_sky.rotation += Math.Pi/2;
 var geometry = new THREE.SphereGeometry(5, 32, 32);
 var material = new THREE.MeshBasicMaterial({map: texture_sky});
 
@@ -58,12 +37,15 @@ var snake = [];
 var orders = [];
 
 
-for (i = 1; i < 2; i++) {
+for (i = 1; i < 5; i++) {
     var temp = new THREE.Mesh(geometry, material);
+    temp.position.y = 0.4;
     /*temp.scale.x= 0.25;
     temp.scale.y= 0.25;
     temp.scale.z= 0.25;*/
     // temp.position.z += i;
+    temp.receiveShadow = true;
+    temp.castShadow = true;
     temp.scale.set(0.1, 0.1, 0.1);
     temp.objectType = "Snake";
     temp.position.x -= i;
@@ -117,9 +99,9 @@ mtlLoader.load('dungeon3.mtl', function (materials) {
 //scene.add( body );
 controls = new THREE.PlayerControls(camera, snake[0], snake);
 controls.init();
-game = new game(scene, snake, orders);
+game = new game(scene, snake, orders, controls);
 
-var p = newObject("Apple", 0.02);
+var p = newObject("Apple", 0.008);
 p.then(function (response) {
     game.init(spawnableObjects);
 }, function (err) {
@@ -131,14 +113,14 @@ p.then(function (response) {
 }, function (err) {
     console.log(err);
 });
-p = newObject("GoldenMouse", 0.01);
+p = newObject("GoldenMouse", 0.005);
 p.then(function (response) {
     game.init(spawnableObjects);
     console.log(spawnableObjects);
 }, function (err) {
     console.log(err);
 });
-p = newObject("mushroom", 0.02);
+p = newObject("mushroom", 0.015);
 p.then(function (response) {
     game.init(spawnableObjects);
 }, function (err) {
