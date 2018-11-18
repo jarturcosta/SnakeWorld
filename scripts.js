@@ -78,14 +78,31 @@ var texture = new THREE.TextureLoader().load('assets/372313222_2048x2048_6195987
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set(16, 16);
-
 var material = new THREE.MeshBasicMaterial({map: texture});
-
 var plane = new THREE.Mesh(geometry_plane, material);
 plane.rotation.x = -(Math.PI / 2);
 scene.add(plane);
 
+var geometry_wall = new THREE.PlaneGeometry(200,40,32);
+var texture = new THREE.TextureLoader().load('assets/wall2.jpg');
+var material = new THREE.MeshBasicMaterial({map: texture});
 
+var wall1 = new THREE.Mesh(geometry_wall,material);
+wall1.position.z = -100;
+scene.add(wall1);
+
+var wall2 = new THREE.Mesh(geometry_wall,material);
+wall2.position.x = -100;
+wall2.rotation.y = -(Math.PI / 2);
+wall2.material.side = THREE.DoubleSide;
+scene.add(wall2);
+
+
+
+
+
+
+/*
 var mtlLoader = new THREE.MTLLoader();
 mtlLoader.setTexturePath('assets/');
 mtlLoader.setPath('assets/');
@@ -112,7 +129,7 @@ mtlLoader.load('dungeon3.mtl', function (materials) {
     });
 
 });
-
+*/
 
 //scene.add( body );
 controls = new THREE.PlayerControls(camera, snake[0], snake);
