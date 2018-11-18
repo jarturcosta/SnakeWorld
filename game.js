@@ -207,7 +207,7 @@ game = function (scene, snake, orders, controls, size) {
     this.cactus_effect = async function cactus_effect(cicles) {
         this.controls.multiplier = this.controls.multiplier/ 2;
         var i;
-        for (i = 0; i < cicles; i++) {
+        for (i = 0; i < cicles*5; i++) {
             await this.sleep(30);
         }
         this.controls.multiplier = this.controls.multiplier * 2;
