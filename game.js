@@ -81,7 +81,7 @@ game = function (scene, snake, orders) {
         for (i = 4; i < this.snake.length; i++) {
 
             for (j = 0; j < temp.length; j++) {
-                if (distance(snake[i].position, temp[j].position) < 0.01 && temp[j].objectType == "Snake") {
+                if (distance(snake[i].position, temp[j].position) < 1 && temp[j].objectType == "Snake") {
                     return i;
 
                 }
