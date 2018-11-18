@@ -282,15 +282,15 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
             // 'q' - strafe left
             playerIsMoving = true;
 
-            if (this.player.position.x - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.x -= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
-                this.camera.position.x -= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+            if (this.player.position.x - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.x - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.x -= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+                this.camera.position.x -= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
 
             }
 
-            if (this.player.position.z + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.z += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
-                this.camera.position.z += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+            if (this.player.position.z + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.z + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.z += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+                this.camera.position.z += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
             }
             order = {
                 "x": -this.moveSpeed * Math.cos(this.player.rotation.y),
@@ -304,15 +304,15 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
             // 'e' - strage right
             playerIsMoving = true;
 
-            if (this.player.position.x + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.x += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
-                this.camera.position.x += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+            if (this.player.position.x + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.x + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.x += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+                this.camera.position.x += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
 
             }
 
-            if (this.player.position.z - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.z-= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
-                this.camera.position.z -= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+            if (this.player.position.z - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.z - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.z-= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+                this.camera.position.z -= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
             }
             order = {
                 "x": this.moveSpeed * Math.cos(this.player.rotation.y),

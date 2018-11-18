@@ -61,7 +61,7 @@ game = function (scene, snake, orders, controls, size) {
     this.spawnFood = function spawnFood() {
         var position = randomPosition([-this.size + 5, this.size - 5], [-this.size + 5, this.size - 5]);
 
-        var random_type = getRandomInt([0, 100]);
+        var random_type = getRandomInt([0, 99]);
         var type;
         if (random_type == 0) {
             type = "GoldenMouse";
@@ -83,8 +83,7 @@ game = function (scene, snake, orders, controls, size) {
         this.enemiesMovement();
     }
     this.spawnEnemy = function spawnEnemy() {
-        var position = randomPosition([-this.size + 5, this.size], [-this.size + 5, this.size]);
-        console.log(position);
+        var position = randomPosition([-this.size + 5, this.size-5], [-this.size + 5, this.size-5]);
         if (this.spawnableObjects != undefined && this.spawnableObjects["pacman"] != undefined) {
             var mesh = this.spawnableObjects["pacman"].clone();
             mesh.objectType = "pacman";
@@ -99,9 +98,9 @@ game = function (scene, snake, orders, controls, size) {
     }
     this.enemiesMovement = function enemiesMovement() {
         for (var i = 0; i < this.enemies.length; i++) {
-            var angle = this.snake[0].rotation.x;
-            this.enemies[i].position.x -= Math.cos(angle) * 1;
-            this.enemies[i].position.z -= Math.sin(angle) * 1;
+            var angle = this.snake[0].rotation.y;
+            this.enemies[i].position.x -= Math.cos(angle);
+            this.enemies[i].position.z -= Math.sin(angle);
             //console.log(this.enemies[i].position);
         }
     }
@@ -163,22 +162,22 @@ game = function (scene, snake, orders, controls, size) {
                 this.cactus_effect(50);
                 break;
             case "bomb":
-                return -2;
+                return -3;
                 break;
             case "rock":
                 return -1;
                 break;
             case "tree1":
-                return -3;
+                return -2;
                 break;
             case "tree2":
-                return -3;
+                return -2;
                 break;
             case "tree3":
-                return -3;
+                return -2;
                 break;
             case "tree4":
-                return -3;
+                return -2;
                 break;
         }
         return 0;
