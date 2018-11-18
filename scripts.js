@@ -28,7 +28,7 @@ var turnSpeed = 0.1;
 
 var material = new THREE.MeshBasicMaterial({map: texture});
 var texture_sky = new THREE.TextureLoader().load('assets/snek3.jpg');
-texture_sky.rotation += Math.Pi/2;
+texture_sky.rotation += Math.Pi / 2;
 var geometry = new THREE.SphereGeometry(5, 32, 32);
 var material = new THREE.MeshBasicMaterial({map: texture_sky});
 
@@ -65,23 +65,19 @@ var plane = new THREE.Mesh(geometry_plane, material);
 plane.rotation.x = -(Math.PI / 2);
 scene.add(plane);
 
-var geometry_wall = new THREE.PlaneGeometry(200,40,32);
+var geometry_wall = new THREE.PlaneGeometry(200, 40, 32);
 var texture = new THREE.TextureLoader().load('assets/wall2.jpg');
 var material = new THREE.MeshBasicMaterial({map: texture});
 
-var wall1 = new THREE.Mesh(geometry_wall,material);
+var wall1 = new THREE.Mesh(geometry_wall, material);
 wall1.position.z = -100;
 scene.add(wall1);
 
-var wall2 = new THREE.Mesh(geometry_wall,material);
+var wall2 = new THREE.Mesh(geometry_wall, material);
 wall2.position.x = -100;
 wall2.rotation.y = -(Math.PI / 2);
 wall2.material.side = THREE.DoubleSide;
 scene.add(wall2);
-
-
-
-
 
 
 /*
@@ -143,12 +139,40 @@ p.then(function (response) {
 }, function (err) {
     console.log(err);
 });
+p = newObject("cactus", 0.015);
+p.then(function (response) {
+    game.init(spawnableObjects);
+}, function (err) {
+    console.log(err);
+});
+p = newObject("bomb", 0.015);
+p.then(function (response) {
+    game.init(spawnableObjects);
+}, function (err) {
+    console.log(err);
+});
+
+p = newObject("pacman", 0.015);
+p.then(function (response) {
+    game.init(spawnableObjects);
+}, function (err) {
+    console.log(err);
+});
+p = newObject("rock", 0.015);
+p.then(function (response) {
+    game.init(spawnableObjects);
+}, function (err) {
+    console.log(err);
+});
 
 var animate = function () {
         var f = game.head_collision(snake[0]);
         var c = game.snake_collision();
         //console.log(h);
+        if (game.enemies.length < game.enemyLimit)
+            game.spawnEnemy()
         game.checkFood();
+        game.enemiesCheck();
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
         var x = snake[0].position.x;
@@ -183,7 +207,19 @@ var animate = function () {
             }
         }
         //console.log(orders);
-        expandSnake(f);
+        switch (f) {
+            case -1:
+                reduceSnake(snake.length - 1);
+                break;
+            case -2:
+                if (snake.length >= 8)
+                    reduceSnake(parseInt(snake.length / 2));
+                else
+                    reduceSnake(4);
+                break;
+            default:
+                expandSnake(f);
+        }
         reduceSnake(c);
         //orders = new_orders;
 
@@ -233,8 +269,8 @@ function expandSnake(i) {
 }
 
 function reduceSnake(i) {
+
     if (i != -1) {
-        console.log(i +"cortar a cobra");
         for (j = i; j < snake.length; j++) {
             var temp = snake[snake.length - 1].clone();
             scene.remove(snake[j]);
@@ -243,8 +279,6 @@ function reduceSnake(i) {
         orders.splice(i, orders.length - i);
     }
 }
-
-
 
 
 animate();

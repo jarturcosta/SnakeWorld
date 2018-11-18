@@ -9,6 +9,9 @@ material_snake = new THREE.MeshBasicMaterial({map: texture_snake});
 
 game = function (scene, snake, orders, controls) {
     this.snake = snake;
+    this.enemies = [];
+    this.enemyLimit = 1;
+    this.enemy = undefined;
     this.orders = orders;
     this.score = 1;
     this.food = {};
@@ -18,7 +21,6 @@ game = function (scene, snake, orders, controls) {
     this.loaded = false;
     this.controls = controls;
     this.init = function init(objects) {
-        console.log(objects);
         this.spawnableObjects = objects;
         ambient_light = new THREE.AmbientLight(0x404040, 2); // soft white light
         ambient_light.position.set(5, 10, 5);
@@ -54,14 +56,45 @@ game = function (scene, snake, orders, controls) {
         var type;
         if (random_type == 0) {
             type = "GoldenMouse";
-        } else if ( 0 < random_type && random_type < 20) {
+        } else if (random_type > 0 && random_type <= 5) {
             type = "mushroom";
-        } else if (20 < random_type && random_type < 25) {
+        } else if (random_type > 5 && random_type <= 7) {
+            type = "bomb";
+        } else if (random_type > 7 && random_type <= 10) {
+            type = "cactus";
+        } else if (random_type > 10 && random_type <= 20) {
             type = "Bird";
         } else {
             type = "Apple";
         }
         this.spawn(type, position);
+    }
+
+    this.enemiesCheck = function enemiesCheck() {
+        this.enemiesMovement();
+    }
+    this.spawnEnemy = function spawnEnemy() {
+        var position = randomPosition([0, 50], [0, 50]);
+        console.log(position);
+        if (this.spawnableObjects != undefined && this.spawnableObjects["pacman"] != undefined) {
+            var mesh = this.spawnableObjects["pacman"].clone();
+            mesh.objectType = "pacman";
+            mesh.position.x = position.x;
+            mesh.position.y = position.y;
+            mesh.position.z = position.z;
+            console.log(mesh);
+            this.enemies.push(mesh);
+
+            this.scene.add(mesh);
+        }
+    }
+    this.enemiesMovement = function enemiesMovement() {
+        for (var i = 0; i < this.enemies.length; i++) {
+            var angle = this.snake[0].rotation.x;
+            this.enemies[i].position.x -= Math.cos(angle)*1;
+            this.enemies[i].position.z -= Math.sin(angle)*1;
+            //console.log(this.enemies[i].position);
+        }
     }
     this.head_collision = function collision(origin) {
         var temp = [];
@@ -111,26 +144,46 @@ game = function (scene, snake, orders, controls) {
             case "mushroom":
                 this.mushroom_effect(50);
                 break;
+            case "cactus":
+                this.cactus_effect(50);
+                break;
+            case "bomb":
+                return -2;
+                break;
+            case "rock":
+                return -1;
+                break;
         }
+        return 0;
     }
 
     this.mushroom_effect = async function mushroom_effect(cicles) {
-        this.controls.moveSpeed = this.controls.moveSpeed*2;
+        this.controls.moveSpeed = this.controls.moveSpeed * 2;
         var i;
         var j;
-        var colors = [0x005bef,0xc300ef,0xef0000,0x00ef33,0xefcb00];
-        for (i = 0; i < cicles;i++) {
+        var colors = [0x005bef, 0xc300ef, 0xef0000, 0x00ef33, 0xefcb00];
+        for (i = 0; i < cicles; i++) {
             for (j = 0; j < colors.length; j++) {
                 this.scene.background = new THREE.Color(colors[j]);
-                scene.getObjectByName("ambient",true).color = new THREE.Color(colors[j]);
-                scene.getObjectByName("ambient",true).intensity = 1;
+                scene.getObjectByName("ambient", true).color = new THREE.Color(colors[j]);
+                scene.getObjectByName("ambient", true).intensity = 1;
                 await this.sleep(30);
             }
         }
         this.scene.background = new THREE.Color(0x00CCFF);
-        scene.getObjectByName("ambient",true).color = new THREE.Color(0x404040)
-        scene.getObjectByName("ambient",true).intensity = 2;
-        this.controls.moveSpeed = this.controls.moveSpeed/2;
+        scene.getObjectByName("ambient", true).color = new THREE.Color(0x404040)
+        scene.getObjectByName("ambient", true).intensity = 2;
+        this.controls.moveSpeed = this.controls.moveSpeed / 2;
+
+    }
+
+    this.cactus_effect = async function cactus_effect(cicles) {
+        this.controls.moveSpeed = this.controls.moveSpeed / 2;
+        var i;
+        for (i = 0; i < cicles; i++) {
+            await this.sleep(30);
+        }
+        this.controls.moveSpeed = this.controls.moveSpeed * 2;
 
     }
 
@@ -159,3 +212,6 @@ function distance(position1, position2) {
     return Math.sqrt(Math.pow(position1.x - position2.x, 2) + Math.pow(position1.y - position2.y, 2) + Math.pow(position1.z - position2.z, 2));
 }
 
+function vector(p1, p2) {
+    return {x: p2.x - p1.x, y: p2.y - p1.y, z: p2.z - p1.z}
+}
