@@ -5,7 +5,9 @@ meshes = [];
 texture_snake = new THREE.TextureLoader().load('assets/snek3.jpg');
 geometry_snake = new THREE.SphereGeometry(5, 32, 32);
 material_snake = new THREE.MeshBasicMaterial({map: texture_snake});
-
+ambient_light = new THREE.AmbientLight(0x404040, 2); // soft white light
+ambient_light.position.set(5, 10, 5);
+ambient_light.name = "ambient";
 
 game = function (scene, snake, orders, controls, size) {
     this.snake = snake;
@@ -19,15 +21,12 @@ game = function (scene, snake, orders, controls, size) {
     this.food = {};
     this.obstacles = {};
     this.scene = scene;
+    this.scene.add(ambient_light);
     this.meshes = [];
     this.loaded = false;
     this.controls = controls;
     this.init = function init(objects) {
         this.spawnableObjects = objects;
-        ambient_light = new THREE.AmbientLight(0x404040, 2); // soft white light
-        ambient_light.position.set(5, 10, 5);
-        ambient_light.name = "ambient";
-        this.scene.add(ambient_light);
     }
 
     function randomPosition(x, y) {

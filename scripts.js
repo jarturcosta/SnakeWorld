@@ -19,29 +19,6 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.25;
 controls.enableZoom = true;
 
-
-var keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
-keyLight.position.set(-100, 0, 100);
-
-var fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'), 0.75);
-fillLight.position.set(100, 0, 100);
-
-var up_light = new THREE.PointLight(0xffffff, 30, 200, 10);
-up_light.position.set(5, 10, 5);
-
-var down_light = new THREE.PointLight(0xffffff, 5, 100);
-down_light.position.set(50, -100, 50);
-
-var backLight = new THREE.DirectionalLight(0xffffff, 1.0);
-backLight.position.set(100, 0, -100).normalize();
-
-//scene.add(keyLight);
-//scene.add(fillLight);
-//scene.add(backLight);
-//scene.add(up_light);
-//scene.add(down_light);
-
-
 var cubePosition;
 var cubeSize;
 var moveSpeed = 0.2;
