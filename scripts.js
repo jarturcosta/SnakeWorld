@@ -41,8 +41,6 @@ backLight.position.set(100, 0, -100).normalize();
 //scene.add(up_light);
 //scene.add(down_light);
 
-var light = new THREE.AmbientLight(0x404040, 5); // soft white light
-scene.add(light);
 
 var cubePosition;
 var cubeSize;
@@ -66,7 +64,7 @@ for (i = 1; i < 2; i++) {
     temp.scale.y= 0.25;
     temp.scale.z= 0.25;*/
     // temp.position.z += i;
-    temp.scale.set(0.26, 0.26, 0.26);
+    temp.scale.set(0.1, 0.1, 0.1);
     temp.objectType = "Snake";
     temp.position.x -= i;
     scene.add(temp);
@@ -76,7 +74,7 @@ for (i = 1; i < 2; i++) {
 
 
 var geometry_plane = new THREE.PlaneGeometry(320, 320, 32);
-var texture = new THREE.TextureLoader().load('assets/grass2.jpg');
+var texture = new THREE.TextureLoader().load('assets/372313222_2048x2048_6195987693227547908.png');
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set(16, 16);
@@ -137,6 +135,12 @@ p = newObject("GoldenMouse", 0.01);
 p.then(function (response) {
     game.init(spawnableObjects);
     console.log(spawnableObjects);
+}, function (err) {
+    console.log(err);
+});
+p = newObject("mushroom", 0.02);
+p.then(function (response) {
+    game.init(spawnableObjects);
 }, function (err) {
     console.log(err);
 });
@@ -222,7 +226,7 @@ function newObject(name, scale) {
 function expandSnake(i) {
     for (j = 0; j < i; j++) {
         var temp = snake[snake.length - 1].clone();
-        temp.scale.set(0.26, 0.26, 0.26);
+        temp.scale.set(0.1, 0.1, 0.1);
         scene.add(temp);
         snake.push(temp);
         orders.push([]);
@@ -240,6 +244,8 @@ function reduceSnake(i) {
         orders.splice(i, orders.length - i);
     }
 }
+
+
 
 
 animate();

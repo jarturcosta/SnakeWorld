@@ -6,6 +6,7 @@ texture_snake = new THREE.TextureLoader().load('assets/snek.jpg');
 geometry_snake = new THREE.SphereGeometry(5, 32, 32);
 material_snake = new THREE.MeshBasicMaterial({map: texture_snake});
 
+
 game = function (scene, snake, orders) {
     this.snake = snake;
     this.orders = orders;
@@ -18,6 +19,10 @@ game = function (scene, snake, orders) {
     this.init = function init(objects) {
         console.log(objects);
         this.spawnableObjects = objects;
+        ambient_light = new THREE.AmbientLight(0x404040, 2); // soft white light
+        ambient_light.position.set(5, 10, 5);
+        ambient_light.name = "ambient";
+        this.scene.add(ambient_light);
     }
 
     function randomPosition(x, y) {
@@ -48,6 +53,9 @@ game = function (scene, snake, orders) {
         var type;
         if (random_type == 1) {
             type = "GoldenMouse";
+        } else if (random_type < 42 && random_type > 22) {
+            console.log("Shroom");
+            type = "mushroom";
         } else if (random_type < 21) {
             type = "Bird";
         } else {
@@ -100,7 +108,32 @@ game = function (scene, snake, orders) {
             case "GoldenMouse":
                 return 5;
                 break;
+            case "mushroom":
+                this.mushroom_effect(25);
+                break;
         }
+    }
+
+    this.mushroom_effect = async function mushroom_effect(cicles) {
+        var i;
+        var j;
+        var colors = [0x005bef,0xc300ef,0xef0000,0x00ef33,0xefcb00];
+        for (i = 0; i < cicles;i++) {
+            for (j = 0; j < colors.length; j++) {
+                this.scene.background = new THREE.Color(colors[j]);
+                scene.getObjectByName("ambient",true).color = new THREE.Color(colors[j]);
+                scene.getObjectByName("ambient",true).intensity = 1;
+                await this.sleep(30);
+            }
+        }
+        this.scene.background = new THREE.Color(0x00CCFF);
+        scene.getObjectByName("ambient",true).color = new THREE.Color(0x404040)
+        scene.getObjectByName("ambient",true).intensity = 2;
+
+    }
+
+    this.sleep = function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
 }
