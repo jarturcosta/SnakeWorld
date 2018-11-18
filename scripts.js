@@ -87,42 +87,32 @@ var plane = new THREE.Mesh(geometry_plane, material);
 plane.rotation.x = -(Math.PI / 2);
 scene.add(plane);
 
-var geometry_wall = new THREE.PlaneGeometry(200,40,32);
+var geometry_wall = new THREE.PlaneGeometry(200, 40, 32);
 var texture = new THREE.TextureLoader().load('assets/wall2.jpg');
 var material = new THREE.MeshBasicMaterial({map: texture});
 
-var wall1 = new THREE.Mesh(geometry_wall,material);
+var wall1 = new THREE.Mesh(geometry_wall, material);
 wall1.position.z = -100;
 scene.add(wall1);
 
-var wall2 = new THREE.Mesh(geometry_wall,material);
+var wall2 = new THREE.Mesh(geometry_wall, material);
 wall2.position.x = -100;
 wall2.rotation.y = -(Math.PI / 2);
 wall2.material.side = THREE.DoubleSide;
 scene.add(wall2);
 
-var wall3 = new THREE.Mesh(geometry_wall,material);
+var wall3 = new THREE.Mesh(geometry_wall, material);
 wall3.position.x = 100;
 wall3.rotation.y = -(Math.PI / 2);
 wall3.material.side = THREE.DoubleSide;
 scene.add(wall3);
 
-var wall4 = new THREE.Mesh(geometry_wall,material);
+var wall4 = new THREE.Mesh(geometry_wall, material);
 wall4.position.z = 100;
 wall4.material.side = THREE.DoubleSide;
 scene.add(wall4);
 
 //add_model("tree1",0.15,30,28);
-
-var i;
-for (i = 0; i < 50; i++) {
-    add_model("tree"+getRndInteger(1,5),0.15,getRndInteger(-97,97),getRndInteger(-97,97) )
-}
-
-
-
-
-
 
 /*
 var mtlLoader = new THREE.MTLLoader();
@@ -156,7 +146,7 @@ mtlLoader.load('dungeon3.mtl', function (materials) {
 //scene.add( body );
 controls = new THREE.PlayerControls(camera, snake[0], snake);
 controls.init();
-game = new game(scene, snake, orders, controls);
+game = new game(scene, snake, orders, controls, 100);
 
 var p = newObject("Apple", 0.008);
 p.then(function (response) {
@@ -203,14 +193,23 @@ p.then(function (response) {
     console.log(err);
 });
 
+var i;
+for (i = 1; i <= 4; i++) {
+    var p = newObject("tree" + i, 0.1);
+    p.then(function (response) {
+        game.init(spawnableObjects);
+    }, function (err) {
+        console.log(err);
+    });
+}
+
+game.spawnTrees();
 var animate = function () {
+        game.spawnTrees();
         var f = game.head_collision(snake[0]);
         var c = game.snake_collision();
         //console.log(h);
-        if (game.enemies.length < game.enemyLimit)
-            game.spawnEnemy()
         game.checkFood();
-        game.enemiesCheck();
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
         var x = snake[0].position.x;
@@ -269,35 +268,7 @@ function calculateDistance(position, order) {
 }
 
 function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min) ) + min;
-}
-
-function add_model(name,scale,x,z) {
-    var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.setTexturePath('assets/');
-    mtlLoader.setPath('assets/');
-    mtlLoader.load(name+'.mtl', function (materials) {
-
-        materials.preload();
-
-        var objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('assets/');
-        objLoader.load(name+'.obj', function (object) {
-
-
-            object.scale.set(scale,scale,scale);
-            object.position.z = z;
-            object.position.x = x;
-            object.rotation.x = -(Math.PI / 2);
-            scene.add(object);
-
-
-
-
-        });
-
-    });
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function newObject(name, scale) {
@@ -339,7 +310,7 @@ function expandSnake(i) {
 
 function reduceSnake(i) {
     if (i != -1) {
-        console.log(i +"cortar a cobra");
+        console.log(i + "cortar a cobra");
         for (j = i; j < snake.length; j++) {
             var temp = snake[snake.length - 1].clone();
             scene.remove(snake[j]);
@@ -348,8 +319,6 @@ function reduceSnake(i) {
         orders.splice(i, orders.length - i);
     }
 }
-
-
 
 
 animate();

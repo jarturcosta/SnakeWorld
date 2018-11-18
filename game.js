@@ -7,9 +7,11 @@ geometry_snake = new THREE.SphereGeometry(5, 32, 32);
 material_snake = new THREE.MeshBasicMaterial({map: texture_snake});
 
 
-game = function (scene, snake, orders, controls) {
+game = function (scene, snake, orders, controls, size) {
     this.snake = snake;
+    this.size = size;
     this.enemies = [];
+    this.spawnedFood = 0;
     this.enemyLimit = 1;
     this.enemy = undefined;
     this.orders = orders;
@@ -33,12 +35,12 @@ game = function (scene, snake, orders, controls) {
     }
 
     this.checkFood = function () {
-        if (this.spawnableObjects != undefined && meshes.length < 5) {
+        if (this.spawnableObjects != undefined && this.spawnedFood < 25) {
+            this.spawnedFood += 1;
             this.spawnFood();
         }
     }
     this.spawn = function (type, position) {
-        //console.log(spawnableObjects);
         if (this.spawnableObjects != undefined && this.spawnableObjects[type] != undefined) {
             var mesh = this.spawnableObjects[type].clone();
             mesh.objectType = type;
@@ -49,8 +51,16 @@ game = function (scene, snake, orders, controls) {
             this.scene.add(mesh);
         }
     }
+    this.spawnTrees = function spawnTrees() {
+        if (meshes.length < 75)
+            for (var i = 0; i < 50; i++) {
+                var r = getRandomInt([1, 4]);
+                this.spawn("tree" + r, randomPosition([-this.size + 5, this.size - 5], [-this.size + 5, this.size - 5]));
+            }
+
+    }
     this.spawnFood = function spawnFood() {
-        var position = randomPosition([0, 50], [0, 50]);
+        var position = randomPosition([-this.size + 5, this.size - 5], [-this.size + 5, this.size - 5]);
 
         var random_type = getRandomInt([0, 100]);
         var type;
@@ -74,7 +84,7 @@ game = function (scene, snake, orders, controls) {
         this.enemiesMovement();
     }
     this.spawnEnemy = function spawnEnemy() {
-        var position = randomPosition([0, 50], [0, 50]);
+        var position = randomPosition([-this.size + 5, this.size], [-this.size + 5, this.size]);
         console.log(position);
         if (this.spawnableObjects != undefined && this.spawnableObjects["pacman"] != undefined) {
             var mesh = this.spawnableObjects["pacman"].clone();
@@ -91,8 +101,8 @@ game = function (scene, snake, orders, controls) {
     this.enemiesMovement = function enemiesMovement() {
         for (var i = 0; i < this.enemies.length; i++) {
             var angle = this.snake[0].rotation.x;
-            this.enemies[i].position.x -= Math.cos(angle)*1;
-            this.enemies[i].position.z -= Math.sin(angle)*1;
+            this.enemies[i].position.x -= Math.cos(angle) * 1;
+            this.enemies[i].position.z -= Math.sin(angle) * 1;
             //console.log(this.enemies[i].position);
         }
     }
@@ -105,10 +115,16 @@ game = function (scene, snake, orders, controls) {
             if (distance(origin.position, temp[i].position) < 1) {
                 scene.remove(temp[i]);
                 meshes.splice(i, 1);
+                var points = this.collide(temp[i])
+                this.score += points;
+                this.spawnedFood -= 1;
                 this.spawnFood();
-                return this.collide(temp[i]);
+                return points;
 
             }
+        }
+        for (i = 0; i < 21; i++) {
+
         }
         return 0;
 
