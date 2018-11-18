@@ -78,7 +78,7 @@ game = function (scene, snake, orders) {
             temp.push(meshes[i]);
         }
         temp.push(snake[0]);
-        for (i = 2; i < this.snake.length; i++) {
+        for (i = 4; i < this.snake.length; i++) {
 
             for (j = 0; j < temp.length; j++) {
                 if (distance(snake[i].position, temp[j].position) < 1 && temp[j].objectType == "Snake") {
