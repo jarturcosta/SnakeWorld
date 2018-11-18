@@ -8,7 +8,7 @@ spawnableObjects = {};
 //camera.position.z =150;
 
 
-var renderer = new THREE.WebGLRenderer({ alpha: true });
+var renderer = new THREE.WebGLRenderer({alpha: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -41,8 +41,8 @@ backLight.position.set(100, 0, -100).normalize();
 //scene.add(up_light);
 //scene.add(down_light);
 
-var light = new THREE.AmbientLight( 0x404040, 5); // soft white light
-scene.add( light );
+var light = new THREE.AmbientLight(0x404040, 5); // soft white light
+scene.add(light);
 
 var cubePosition;
 var cubeSize;
@@ -60,13 +60,14 @@ var snake = [];
 var orders = [];
 
 
-for (i = 1; i < 100; i++) {
+for (i = 1; i < 2; i++) {
     var temp = new THREE.Mesh(geometry, material);
     /*temp.scale.x= 0.25;
     temp.scale.y= 0.25;
     temp.scale.z= 0.25;*/
-   // temp.position.z += i;
+    // temp.position.z += i;
     temp.scale.set(0.26, 0.26, 0.26);
+    temp.objectType = "Snake";
     temp.position.x -= i;
     scene.add(temp);
     snake.push(temp);
@@ -78,14 +79,13 @@ var geometry_plane = new THREE.PlaneGeometry(320, 320, 32);
 var texture = new THREE.TextureLoader().load('assets/grass2.jpg');
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
-texture.repeat.set( 16, 16 );
+texture.repeat.set(16, 16);
 
 var material = new THREE.MeshBasicMaterial({map: texture});
 
-var plane = new THREE.Mesh(geometry_plane,material);
+var plane = new THREE.Mesh(geometry_plane, material);
 plane.rotation.x = -(Math.PI / 2);
 scene.add(plane);
-
 
 
 var mtlLoader = new THREE.MTLLoader();
@@ -101,9 +101,9 @@ mtlLoader.load('dungeon3.mtl', function (materials) {
     objLoader.load('dungeon3.obj', function (object) {
 
 
-        object.scale.x= 0.015;
-        object.scale.y= 0.015;
-        object.scale.z= 0.015;
+        object.scale.x = 0.015;
+        object.scale.y = 0.015;
+        object.scale.z = 0.015;
         object.rotation.x = -(Math.PI / 2);
         object.position.z = -10;
         scene.add(object);
@@ -119,7 +119,7 @@ mtlLoader.load('dungeon3.mtl', function (materials) {
 //scene.add( body );
 controls = new THREE.PlayerControls(camera, snake[0], snake);
 controls.init();
-game = new game(scene);
+game = new game(scene, snake, orders);
 
 var p = newObject("Apple", 0.02);
 p.then(function (response) {
@@ -142,7 +142,9 @@ p.then(function (response) {
 });
 
 var animate = function () {
-        game.collision(snake[0]);
+        var f = game.head_collision(snake[0]);
+        var c = game.snake_collision();
+        //console.log(h);
         game.checkFood();
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
@@ -164,6 +166,7 @@ var animate = function () {
                     if (dist >= 0.5) {
                         //console.log(snake[i + 1]);
                         if (i < orders.length - 1) {
+                            orders[i + 1] = [];
                             orders[i + 1].push([snake[i + 1].position.x, snake[i + 1].position.y, snake[i + 1].position.z]);
                         }
                         snake[i + 1].position.x = order[0];
@@ -176,6 +179,9 @@ var animate = function () {
 
             }
         }
+        //console.log(orders);
+        expandSnake(f);
+        reduceSnake(c);
         //orders = new_orders;
 
     }
@@ -190,7 +196,7 @@ function newObject(name, scale) {
     var loaderPromise = new Promise(function (resolve, reject) {
         function loadDone(x) {
             x.scale.set(scale, scale, scale);
-            x.rotation.x -= Math.PI/2;
+            x.rotation.x -= Math.PI / 2;
             spawnableObjects[name] = x;
             resolve(x); // it went ok!
         }
@@ -212,5 +218,28 @@ function newObject(name, scale) {
     return loaderPromise;
 
 }
+
+function expandSnake(i) {
+    for (j = 0; j < i; j++) {
+        var temp = snake[snake.length - 1].clone();
+        temp.scale.set(0.26, 0.26, 0.26);
+        scene.add(temp);
+        snake.push(temp);
+        orders.push([]);
+    }
+}
+
+function reduceSnake(i) {
+    if (i != -1) {
+        console.log(i +"cortar a cobra");
+        for (j = 1; j < i; j++) {
+            var temp = snake[snake.length - 1].clone();
+            scene.remove(snake[j]);
+        }
+        snake.splice(i, snake.length - i);
+        orders.splice(i, orders.length - i);
+    }
+}
+
 
 animate();

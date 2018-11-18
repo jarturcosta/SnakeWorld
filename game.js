@@ -1,7 +1,15 @@
 FOODTYPES = ["Apple", "rat", "bird"];
 OBJECT_TEXTURES = ["apple", "rat", "bird"];
+HARMFUL_OBJECTS = [];
 meshes = [];
-game = function (scene) {
+texture_snake = new THREE.TextureLoader().load('assets/snek.jpg');
+geometry_snake = new THREE.SphereGeometry(5, 32, 32);
+material_snake = new THREE.MeshBasicMaterial({map: texture_snake});
+
+game = function (scene, snake, orders) {
+    this.snake = snake;
+    this.orders = orders;
+    this.score = 1;
     this.food = {};
     this.obstacles = {};
     this.scene = scene;
@@ -25,6 +33,7 @@ game = function (scene) {
         //console.log(spawnableObjects);
         if (this.spawnableObjects != undefined && this.spawnableObjects[type] != undefined) {
             var mesh = this.spawnableObjects[type].clone();
+            mesh.objectType = type;
             mesh.position.x = position.x;
             mesh.position.y = position.y;
             mesh.position.z = position.z;
@@ -46,7 +55,7 @@ game = function (scene) {
         }
         this.spawn(type, position);
     }
-    this.collision = function collision(origin) {
+    this.head_collision = function collision(origin) {
         var temp = [];
         for (i = 0; i < meshes.length; i++) {
             temp.push(meshes[i]);
@@ -56,9 +65,42 @@ game = function (scene) {
                 scene.remove(temp[i]);
                 meshes.splice(i, 1);
                 this.spawnFood();
+                return this.collide(temp[i]);
+
             }
         }
+        return 0;
 
+    }
+    this.snake_collision = function snake_collision() {
+        var temp = [];
+        for (i = 0; i < meshes.length; i++) {
+            temp.push(meshes[i]);
+        }
+        temp.push(snake[0]);
+        for (i = 2; i < this.snake.length; i++) {
+
+            for (j = 0; j < temp.length; j++) {
+                if (distance(snake[i].position, temp[j].position) < 1 && temp[j].objectType == "Snake") {
+                    return i;
+
+                }
+            }
+        }
+        return -1;
+    }
+    this.collide = function collide(mesh) {
+        switch (mesh.objectType) {
+            case "Apple":
+                return 1;
+                break;
+            case "Bird":
+                return 2;
+                break;
+            case "GoldenMouse":
+                return 5;
+                break;
+        }
     }
 
 }
@@ -82,21 +124,3 @@ function distance(position1, position2) {
     return Math.sqrt(Math.pow(position1.x - position2.x, 2) + Math.pow(position1.y - position2.y, 2) + Math.pow(position1.z - position2.z, 2));
 }
 
-function clone(obj) {
-    if (obj === null || typeof (obj) !== 'object' || 'isActiveClone' in obj)
-        return obj;
-
-    if (obj instanceof Date)
-        var temp = new obj.constructor(); //or new Date(obj);
-    else
-        var temp = obj.constructor();
-
-    for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            obj['isActiveClone'] = null;
-            temp[key] = clone(obj[key]);
-            delete obj['isActiveClone'];
-        }
-    }
-    return temp;
-}
