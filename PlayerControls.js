@@ -11,8 +11,9 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
 
     this.center = new THREE.Vector3(player.position.x, player.position.y, player.position.z);
 
-    this.moveSpeed = 0.8;
-    this.turnSpeed = 0.04;
+    this.moveSpeed = 0.16;
+    this.multiplier = 1;
+    this.turnSpeed = 0.08;
 
     this.userZoom = true;
     this.userZoomSpeed = 1.0;
@@ -225,15 +226,15 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
         if (keyState[38] || keyState[87]) {
 
             // up arrow or 'w' - move forward
-            if (this.player.position.x - this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x - this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.x -= this.moveSpeed * Math.sin(this.player.rotation.y);
-                this.camera.position.x -= this.moveSpeed * Math.sin(this.player.rotation.y);
+            if (this.player.position.x - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.x -= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+                this.camera.position.x -= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
 
             }
 
-            if (this.player.position.z - this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z - this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.z -= this.moveSpeed * Math.cos(this.player.rotation.y);
-                this.camera.position.z -= this.moveSpeed * Math.cos(this.player.rotation.y);
+            if (this.player.position.z - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.z -= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+                this.camera.position.z -= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
             }
         }
 
@@ -242,15 +243,15 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
             // down arrow or 's' - move backward
             playerIsMoving = true;
 
-            if (this.player.position.x + this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x + this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.x += this.moveSpeed * Math.sin(this.player.rotation.y);
-                this.camera.position.x += this.moveSpeed * Math.sin(this.player.rotation.y);
+            if (this.player.position.x + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.x += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+                this.camera.position.x += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
 
             }
 
-            if (this.player.position.z + this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z + this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.z += this.moveSpeed * Math.cos(this.player.rotation.y);
-                this.camera.position.z += this.moveSpeed * Math.cos(this.player.rotation.y);
+            if (this.player.position.z + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.z += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+                this.camera.position.z += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
             }
             order = {
                 "x": this.moveSpeed * Math.sin(this.player.rotation.y),
@@ -281,15 +282,15 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
             // 'q' - strafe left
             playerIsMoving = true;
 
-            if (this.player.position.x - this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x - this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.x -= this.moveSpeed * Math.sin(this.player.rotation.y);
-                this.camera.position.x -= this.moveSpeed * Math.sin(this.player.rotation.y);
+            if (this.player.position.x - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.x -= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+                this.camera.position.x -= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
 
             }
 
-            if (this.player.position.z + this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z + this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.z += this.moveSpeed * Math.cos(this.player.rotation.y);
-                this.camera.position.z += this.moveSpeed * Math.cos(this.player.rotation.y);
+            if (this.player.position.z + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.z += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+                this.camera.position.z += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
             }
             order = {
                 "x": -this.moveSpeed * Math.cos(this.player.rotation.y),
@@ -303,15 +304,15 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
             // 'e' - strage right
             playerIsMoving = true;
 
-            if (this.player.position.x + this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x + this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.x += this.moveSpeed * Math.sin(this.player.rotation.y);
-                this.camera.position.x += this.moveSpeed * Math.sin(this.player.rotation.y);
+            if (this.player.position.x + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.x += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+                this.camera.position.x += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
 
             }
 
-            if (this.player.position.z - this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z - this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.z-= this.moveSpeed * Math.cos(this.player.rotation.y);
-                this.camera.position.z -= this.moveSpeed * Math.cos(this.player.rotation.y);
+            if (this.player.position.z - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.z-= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+                this.camera.position.z -= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
             }
             order = {
                 "x": this.moveSpeed * Math.cos(this.player.rotation.y),

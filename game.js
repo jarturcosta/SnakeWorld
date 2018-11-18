@@ -168,12 +168,24 @@ game = function (scene, snake, orders, controls, size) {
             case "rock":
                 return -1;
                 break;
+            case "tree1":
+                return -3;
+                break;
+            case "tree2":
+                return -3;
+                break;
+            case "tree3":
+                return -3;
+                break;
+            case "tree4":
+                return -3;
+                break;
         }
         return 0;
     }
 
     this.mushroom_effect = async function mushroom_effect(cicles) {
-        this.controls.moveSpeed = this.controls.moveSpeed * 2;
+        this.controls.multiplier = this.controls.multiplier * 2;
         var i;
         var j;
         var colors = [0x005bef, 0xc300ef, 0xef0000, 0x00ef33, 0xefcb00];
@@ -188,17 +200,17 @@ game = function (scene, snake, orders, controls, size) {
         this.scene.background = new THREE.Color(0x00CCFF);
         scene.getObjectByName("ambient", true).color = new THREE.Color(0x404040)
         scene.getObjectByName("ambient", true).intensity = 2;
-        this.controls.moveSpeed = this.controls.moveSpeed / 2;
+        this.controls.multiplier = this.controls.multiplier / 2;
 
     }
 
     this.cactus_effect = async function cactus_effect(cicles) {
-        this.controls.moveSpeed = this.controls.moveSpeed / 2;
+        this.controls.multiplier = this.controls.multiplier/ 2;
         var i;
         for (i = 0; i < cicles; i++) {
             await this.sleep(30);
         }
-        this.controls.moveSpeed = this.controls.moveSpeed * 2;
+        this.controls.multiplier = this.controls.multiplier * 2;
 
     }
 

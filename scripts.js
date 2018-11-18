@@ -182,6 +182,8 @@ for (i = 1; i <= 4; i++) {
 
 game.spawnTrees();
 var animate = function () {
+        controls.moveSpeed = 0.08 + 0.01*(snake.length-4);
+        document.getElementById("score").innerHTML = snake.length - 4;
         game.spawnTrees();
         var f = game.head_collision(snake[0]);
         var c = game.snake_collision();
@@ -231,6 +233,8 @@ var animate = function () {
                 else
                     reduceSnake(4);
                 break;
+            case -3:
+                reduceSnake(4);
             default:
                 expandSnake(f);
         }
