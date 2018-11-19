@@ -325,7 +325,7 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
 
             // 'e' - go up
             playerIsMoving = true;
-            if (!this.tired && this.player.position.y + this.multiplier * this.moveSpeed > 0.4 && this.player.position.y + this.multiplier * this.moveSpeed < this.body.length*0.5  - 1) {
+            if (!this.tired && this.player.position.y + this.multiplier * this.moveSpeed > 0.4 && this.player.position.y + this.multiplier * this.moveSpeed < this.body.length*0.5) {
                 this.player.position.y += this.multiplier * this.moveSpeed;
                 this.camera.position.y += this.multiplier * this.moveSpeed;
                 order = {

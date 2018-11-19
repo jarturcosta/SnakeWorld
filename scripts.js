@@ -174,7 +174,7 @@ for (i = 1; i <= 4; i++) {
 
 game.spawnTrees();
 var animate = function () {
-        controls.moveSpeed = 0.08 + 0.01 * (snake.length - 4);
+        controls.moveSpeed = 0.16 + 0.005 * (snake.length/2 - 4);
         document.getElementById("score").innerHTML = snake.length - 4;
         game.spawnTrees();
         var f = game.head_collision(snake[0]);
@@ -200,7 +200,7 @@ var animate = function () {
                     order = orders[i].pop();
                     var dist = calculateDistance(snake[i + 1].position, order);
                     //console.log(dist);
-                    if (dist >= 0.5) {
+                    if (dist >= 0.45) {
                         //console.log(snake[i + 1]);
                         if (i < orders.length - 1) {
                             orders[i + 1] = [];
