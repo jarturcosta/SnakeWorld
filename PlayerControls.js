@@ -1,6 +1,8 @@
 THREE.PlayerControls = function (camera, player, body, domElement) {
 
     this.camera = camera;
+    this.stretch = 0;
+    this.tired = false;
     this.player = player;
     this.body = body;
     this.domElement = (domElement !== undefined) ? domElement : document;
@@ -222,19 +224,21 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
     };
 
     this.checkKeyStates = function () {
-        var order = {"x": undefined, "y": undefined, "z": undefined};
+        var order = {"x": 0, "y": 0, "z": 0};
         if (keyState[38] || keyState[87]) {
 
             // up arrow or 'w' - move forward
-            if (this.player.position.x - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.x -= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
-                this.camera.position.x -= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+            if (this.player.position.x - this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x - this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.x -= this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y);
+                this.camera.position.x -= this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y);
+                order["x"] = -this.multiplier *this.moveSpeed * Math.cos(this.player.rotation.y);
 
             }
 
-            if (this.player.position.z - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.z -= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
-                this.camera.position.z -= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+            if (this.player.position.z - this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z - this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.z -= this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y);
+                this.camera.position.z -= this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y);
+                order["z"] = -this.multiplier *this.moveSpeed * Math.cos(this.player.rotation.y);
             }
         }
 
@@ -243,21 +247,19 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
             // down arrow or 's' - move backward
             playerIsMoving = true;
 
-            if (this.player.position.x + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.x += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
-                this.camera.position.x += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+            if (this.player.position.x + this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.x + this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.x += this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y);
+                this.camera.position.x += this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y);
+                order["x "] = this.multiplier *this.moveSpeed * Math.sin(this.player.rotation.y)
 
             }
 
-            if (this.player.position.z + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.z += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
-                this.camera.position.z += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+            if (this.player.position.z + this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.z + this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.z += this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y);
+                this.camera.position.z += this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y);
+                order["z"] = this.multiplier *this.moveSpeed * Math.cos(this.player.rotation.y);
             }
-            order = {
-                "x": this.moveSpeed * Math.sin(this.player.rotation.y),
-                "y": undefined,
-                "z": this.moveSpeed * Math.cos(this.player.rotation.y)
-            };
+
         }
 
         if (keyState[37] || keyState[65]) {
@@ -266,7 +268,6 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
             playerIsMoving = true;
 
             this.player.rotation.y += this.turnSpeed;
-            order = {"x": undefined, "y": this.turnSpeed, "z": undefined};
         }
 
         if (keyState[39] || keyState[68]) {
@@ -275,22 +276,22 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
             playerIsMoving = true;
 
             this.player.rotation.y -= this.turnSpeed;
-            order = {"x": undefined, "y": -this.turnSpeed, "z": undefined};
         }
+        /*
         if (keyState[81]) {
 
             // 'q' - strafe left
             playerIsMoving = true;
 
-            if (this.player.position.x - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.x - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.x -= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
-                this.camera.position.x -= this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+            if (this.player.position.x - this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.x - this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.x -= this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y);
+                this.camera.position.x -= this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y);
 
             }
 
-            if (this.player.position.z + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.z + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.z += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
-                this.camera.position.z += this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+            if (this.player.position.z + this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.z + this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.z += this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y);
+                this.camera.position.z += this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y);
             }
             order = {
                 "x": -this.moveSpeed * Math.cos(this.player.rotation.y),
@@ -304,24 +305,72 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
             // 'e' - strage right
             playerIsMoving = true;
 
-            if (this.player.position.x + this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.x + this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.x += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
-                this.camera.position.x += this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y);
+            if (this.player.position.x + this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y) > -100 + 0.5 && this.player.position.x + this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.x += this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y);
+                this.camera.position.x += this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y);
 
             }
 
-            if (this.player.position.z - this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.z - this.multiplier*this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
-                this.player.position.z-= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
-                this.camera.position.z -= this.multiplier*this.moveSpeed * Math.sin(this.player.rotation.y);
+            if (this.player.position.z - this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y) > -100 + 0.5 && this.player.position.z - this.multiplier * this.moveSpeed * Math.cos(this.player.rotation.y) < 100 - 0.5) {
+                this.player.position.z -= this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y);
+                this.camera.position.z -= this.multiplier * this.moveSpeed * Math.sin(this.player.rotation.y);
             }
             order = {
                 "x": this.moveSpeed * Math.cos(this.player.rotation.y),
                 "y": undefined,
                 "z": -this.moveSpeed * Math.sin(this.player.rotation.y)
-            };
+            }
+        }*/
+        if (keyState[69]) {
+
+            // 'e' - go up
+            playerIsMoving = true;
+            if (!this.tired && this.player.position.y + this.multiplier * this.moveSpeed > 0.4 && this.player.position.y + this.multiplier * this.moveSpeed < this.body.length*0.5  - 1) {
+                this.player.position.y += this.multiplier * this.moveSpeed;
+                this.camera.position.y += this.multiplier * this.moveSpeed;
+                order = {
+                    "x": 0,
+                    "y": this.multiplier * this.moveSpeed,
+                    "z": 0
+                };
+            }
+
+        }
+
+        if (keyState[81]) {
+
+            // 'q' - go down
+            playerIsMoving = true;
+
+            if (this.player.position.y - this.multiplier * this.moveSpeed > 0.4 && this.player.position.y - this.multiplier * this.moveSpeed < this.body.length-1) {
+                this.player.position.y -= this.multiplier * this.moveSpeed;
+                this.camera.position.y -= this.multiplier * this.moveSpeed;
+                order = {
+                    "x": 0,
+                    "y": -this.multiplier * this.moveSpeed,
+                    "z": 0
+                };
+            }
+
+        }
+        if (this.player.position.y > 0.4) {
+            this.stretch += Math.abs(order["x"])+Math.abs(order["y"])+Math.abs(order["z"]);
+        } if (this.stretch > this.body.length-1) {
+            this.stretch = 0;
+            this.tired = true;
+        }
+        if (this.tired) {
+            for (var i = 0; i< this.body.length; i++) {
+                this.body[i].position.y -= this.multiplier * this.moveSpeed;
+            }
+
+            this.camera.position.y -= this.multiplier * this.moveSpeed;
+            if (this.player.position.y <= 0.4) {
+                this.player.position.y = 0.4;
+                this.tired = false;
+            }
         }
         return order;
-
     };
 
     function getAutoRotationAngle() {
@@ -442,7 +491,6 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
     function onKeyDown(event) {
 
         event = event || window.event;
-
         keyState[event.keyCode || event.which] = true;
 
     }
@@ -450,7 +498,6 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
     function onKeyUp(event) {
 
         event = event || window.event;
-
         keyState[event.keyCode || event.which] = false;
 
     }
@@ -465,5 +512,6 @@ THREE.PlayerControls = function (camera, player, body, domElement) {
     this.domElement.addEventListener('keydown', onKeyDown, false);
     this.domElement.addEventListener('keyup', onKeyUp, false);
 
-};
+}
+;
 THREE.PlayerControls.prototype = Object.create(THREE.EventDispatcher.prototype);

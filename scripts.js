@@ -2,8 +2,6 @@ var scene = new THREE.Scene();
 
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-camera.position.z = 5;
-camera.position.y -= 19;
 spawnableObjects = {};
 //camera.position.z =150;
 
@@ -11,13 +9,7 @@ spawnableObjects = {};
 var renderer = new THREE.WebGLRenderer({alpha: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-
 scene.background = new THREE.Color(0x00CCFF);
-
-var controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.25;
-controls.enableZoom = true;
 
 var cubePosition;
 var cubeSize;
@@ -182,7 +174,7 @@ for (i = 1; i <= 4; i++) {
 
 game.spawnTrees();
 var animate = function () {
-        controls.moveSpeed = 0.08 + 0.01*(snake.length-4);
+        controls.moveSpeed = 0.08 + 0.01 * (snake.length - 4);
         document.getElementById("score").innerHTML = snake.length - 4;
         game.spawnTrees();
         var f = game.head_collision(snake[0]);
@@ -198,6 +190,8 @@ var animate = function () {
         //console.log(previous);
         controls.update();
 
+
+        //snake physics
         orders[0].push([x, y, z]);
         for (i = 0; i < orders.length; i++) {
             if (snake[i + 1] != undefined) {
@@ -213,7 +207,12 @@ var animate = function () {
                             orders[i + 1].push([snake[i + 1].position.x, snake[i + 1].position.y, snake[i + 1].position.z]);
                         }
                         snake[i + 1].position.x = order[0];
-                        snake[i + 1].position.y = order[1];
+
+                        if (order[1] < 0.4) {
+                            snake[i + 1].position.y = 0.4
+                        } else {
+                            snake[i + 1].position.y = order[1];
+                        }
                         snake[i + 1].position.z = order[2];
 
                     }

@@ -5,7 +5,7 @@ meshes = [];
 texture_snake = new THREE.TextureLoader().load('assets/snek3.jpg');
 geometry_snake = new THREE.SphereGeometry(5, 32, 32);
 material_snake = new THREE.MeshBasicMaterial({map: texture_snake});
-ambient_light = new THREE.AmbientLight(0x404040, 2); // soft white light
+ambient_light = new THREE.PointLight(0x404040, 3); // soft white light
 ambient_light.position.set(5, 10, 5);
 ambient_light.name = "ambient";
 
@@ -45,6 +45,10 @@ game = function (scene, snake, orders, controls, size) {
             mesh.objectType = type;
             mesh.position.x = position.x;
             mesh.position.y = position.y;
+            if (type == "Bird") {
+                var range = Math.max(60, this.snake.length);
+                mesh.position.y = getRandomInt([50, range]);
+            }
             mesh.position.z = position.z;
             meshes.push(mesh);
             this.scene.add(mesh);
@@ -116,7 +120,6 @@ game = function (scene, snake, orders, controls, size) {
                 var points = this.collide(temp[i])
                 this.score += points;
                 this.spawnedFood -= 1;
-                this.spawnFood();
                 return points;
 
             }
@@ -150,7 +153,7 @@ game = function (scene, snake, orders, controls, size) {
                 return 1;
                 break;
             case "Bird":
-                return 2;
+                return 10;
                 break;
             case "GoldenMouse":
                 return 5;
